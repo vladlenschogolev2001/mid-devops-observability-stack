@@ -1,0 +1,36 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: "default"
+  group_by: ["alertname", "service"]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+
+  routes:
+    - match:
+        severity: critical
+      receiver: "critical"
+      continue: true
+
+    - match:
+        severity: warning
+      receiver: "warning"
+
+receivers:
+  - name: "default"
+    # В реальном проекте здесь webhook / email / slack / telegram
+
+  - name: "critical"
+    # Пример для Telegram (нужен bot token и chat_id)
+
+  - name: "warning"
+    # Можно отправлять в менее срочный канал
+
+inhibit_rules:
+  - source_match:
+      severity: "critical"
+    target_match:
+      severity: "warning"
+    equal: ["alertname", "service"]
